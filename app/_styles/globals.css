@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: theme('colors.primary.950');
+    /* Faint pink and teal light spill, like a sign seen across a parking lot */
+    background-image:
+      radial-gradient(60rem 30rem at 10% -10%, rgb(218 85 119 / 0.12), transparent 70%),
+      radial-gradient(50rem 30rem at 100% 0%, rgb(79 201 180 / 0.07), transparent 70%),
+      radial-gradient(40rem 24rem at 50% 110%, rgb(245 219 138 / 0.05), transparent 70%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2 {
+    @apply font-display tracking-wide;
+  }
+}
+
+@layer utilities {
+  .neon-pink {
+    color: theme('colors.accent.200');
+    text-shadow:
+      0 0 2px theme('colors.accent.400 / 50%'),
+      0 0 10px theme('colors.accent.500 / 35%'),
+      0 0 24px theme('colors.accent.600 / 20%');
+  }
+
+  .neon-leaf {
+    color: theme('colors.leaf.300');
+    text-shadow:
+      0 0 2px theme('colors.leaf.400 / 45%'),
+      0 0 12px theme('colors.leaf.500 / 25%');
+  }
+
+  .neon-flicker {
+    animation: flicker 6s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      opacity: 1;
+    }
+    20%, 24%, 55% {
+      opacity: 0.8;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .neon-flicker {
+      animation: none;
+    }
+  }
+}
+
+@layer components {
+  .spinner {
+    margin: 3.2rem auto 1.6rem;
+    width: 60px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid theme('colors.primary.900');
+    border-right-color: theme('colors.primary.200');
+    animation: rotate 1s infinite linear;
+  }
+
+  .spinner-mini {
+    margin: 0;
+    width: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid theme('colors.primary.200');
+    border-right-color: transparent;
+    animation: rotate 1s infinite linear;
+  }
+
+  @keyframes rotate {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+}
+
+
+.rdp-root {
+  --rdp-accent-color: theme('colors.accent.500') !important;
+  --rdp-accent-background-color: theme('colors.accent.500 / 25%') !important;
+  --rdp-today-color: theme('colors.leaf.400') !important;
+  /* Roomy, finger-friendly cells; a month is 7 cells wide, so this also
+     leaves space in the caption for the prev/next arrows. */
+  --rdp-day-width: 40px !important;
+  --rdp-day-height: 40px !important;
+  --rdp-day_button-width: 38px !important;
+  --rdp-day_button-height: 38px !important;
+
+  margin: 0 auto !important;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.rdp-month_caption {
+  font-size: 1rem;
+}
+
+/* The prev/next arrows sit in the top-right corner; keep the last month's
+   caption clear of them. */
+.rdp-month:last-of-type .rdp-month_caption {
+  padding-inline-end: calc(var(--rdp-nav_button-width) * 2);
+}
+
+/* Two months side by side in the half-width laptop column */
+@media (min-width: 1280px) {
+  .rdp-root {
+    --rdp-day-width: 34px !important;
+    --rdp-day-height: 34px !important;
+    --rdp-day_button-width: 32px !important;
+    --rdp-day_button-height: 32px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .rdp-root {
+    --rdp-day-width: 36px !important;
+    --rdp-day-height: 36px !important;
+    --rdp-day_button-width: 34px !important;
+    --rdp-day_button-height: 34px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .rdp-root {
+    --rdp-day-width: 32px !important;
+    --rdp-day-height: 32px !important;
+    --rdp-day_button-width: 30px !important;
+    --rdp-day_button-height: 30px !important;
+    --rdp-nav_button-width: 1.75rem !important;
+  }
+
+  .rdp-month_caption {
+    font-size: 0.875rem;
+  }
+}
