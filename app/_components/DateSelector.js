@@ -1,0 +1,101 @@
+'use client';
+
+import { differenceInDays, isPast, isSameDay } from 'date-fns';
+import { useSyncExternalStore } from 'react';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
+import { useReservation } from './ReservationContext';
+import { isRangeBooked } from '../_lib/booking-rules';
+
+function useAtLeast(width) {
+  const query = `(min-width: ${width}px)`;
+
+  return useSyncExternalStore(
+    (onChange) => {
+      const media = window.matchMedia(query);
+      media.addEventListener('change', onChange);
+      return () => media.removeEventListener('change', onChange);
+    },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
+
+function DateSelector({ settings, cabin, bookedDates }) {
+  const { range, setRange, resetRange } = useReservation();
+
+  const displayRange = isRangeBooked(range, bookedDates) ? {} : range;
+
+  const { regularPrice, discount } = cabin;
+  const numNights = differenceInDays(displayRange.to, displayRange.from);
+  const cabinPrice = numNights * (regularPrice - discount);
+
+  // SETTINGS
+  const { minBookingLength, maxBookingLength } = settings;
+  const twoMonths = useAtLeast(768);
+
+  return (
+    <div className='flex flex-col justify-between min-w-0'>
+      <div className='overflow-x-auto'>
+        <DayPicker
+          className='px-3 pt-6 pb-6 sm:px-6 sm:pt-10 max-w-full'
+          mode='range'
+          onSelect={(range) => setRange(range)}
+          selected={displayRange}
+          min={minBookingLength + 1}
+          max={maxBookingLength}
+          startMonth={new Date()}
+          startDate={new Date()}
+          endMonth={new Date(new Date().getFullYear() + 5, 11)}
+          captionLayout='dropdown'
+          numberOfMonths={twoMonths ? 2 : 1}
+          navLayout='after'
+          disabled={(curDate) =>
+            isPast(curDate) ||
+            bookedDates.some((date) => isSameDay(date, curDate))
+          }
+        />
+      </div>
+
+      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-8 bg-primary-950/70 border-t border-accent-500/40 text-primary-100 py-4 sm:h-[72px] sm:py-0'>
+        <div className='flex flex-wrap items-baseline gap-3 sm:gap-6'>
+          <p className='flex gap-2 items-baseline'>
+            {discount > 0 ? (
+              <>
+                <span className='text-2xl'>${regularPrice - discount}</span>
+                <span className='line-through font-semibold text-primary-500'>
+                  ${regularPrice}
+                </span>
+              </>
+            ) : (
+              <span className='text-2xl'>${regularPrice}</span>
+            )}
+            <span className=''>/night</span>
+          </p>
+          {numNights ? (
+            <>
+              <p className='rounded-full bg-accent-500/20 text-accent-100 px-3 py-1 text-2xl'>
+                <span>&times;</span> <span>{numNights}</span>
+              </p>
+              <p>
+                <span className='text-lg font-bold uppercase'>Total</span>{' '}
+                <span className='text-2xl font-semibold'>${cabinPrice}</span>
+              </p>
+            </>
+          ) : null}
+        </div>
+
+        {range.from || range.to ? (
+          <button
+            className='rounded-full border border-primary-600 py-2 px-4 text-sm font-semibold hover:border-accent-500 hover:text-accent-200 transition-colors'
+            onClick={() => resetRange()}
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export default DateSelector;
