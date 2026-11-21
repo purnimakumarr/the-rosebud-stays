@@ -10,9 +10,9 @@ A booking site for a small-town motel, inspired by the Rosebud Motel from _Schit
 
 On phones:
 
-| Home                                                | Rooms                                                 | Room                                                |
-| --------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------- |
-| ![Home on a phone](docs/screenshots/phone-home.jpg) | ![Rooms on a phone](docs/screenshots/phone-rooms.jpg) | ![Room on a phone](docs/screenshots/phone-room.jpg) |
+| Home                                                | Rooms                                                 | Reservations                                                  |
+| --------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
+| ![Home on a phone](docs/screenshots/home-phone.jpg) | ![Rooms on a phone](docs/screenshots/rooms-phone.jpg) | ![Reservations on a phone](docs/screenshots/reservations.jpg) |
 
 ## Built with
 
